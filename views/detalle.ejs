@@ -1,0 +1,43 @@
+<%- include("template/cabecera", {tituloWeb: "Detalle del Pokemon"}) %>
+<div class="container">
+    <h1>Detalles del Pokémon</h1>
+    <% if (error){ %>
+    <%= mensaje %>
+    <a class="btn btn-dark btn-block my-2" href="/pokemon">Volver</a>
+    <% } %>
+    <% if (!error){ %>
+        <form id="editar" data-id="<%= pokemon._id %>">
+            <input type="number" value="<%= pokemon.id %>" class="form-control my-2" name="id" id="idInput">
+            <input type="text" value="<%= pokemon.nombre %>" class="form-control my-2" name="nombre" id="nombreInput">
+            <input type="text" value="<%= pokemon.tipo %>" class="form-control my-2" name="tipo" id="tipoInput">
+            <input type="text" value="<%= pokemon.descripcion %>" class="form-control my-2" name="descripcion" id="descripcionInput">
+            <button class="btn btn-primary btn-sm" type="submit">Actualizar</button>
+        </form>
+    <% } %> 
+</div>
+<%- include("template/footer") %>
+<script>
+    const formEditar = document.querySelector('#editar');
+        formEditar.addEventListener('submit', async(e)=>{
+            e.preventDefault()
+            const id = formEditar.elements['id'].value
+            const nombre = formEditar.elements['nombre'].value
+            const tipo = formEditar.elements['tipo'].value
+            const descripcion = formEditar.elements['descripcion'].value
+            const _id = formEditar.dataset.id
+            
+            const data = await fetch(`/pokemon/${_id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id, nombre, tipo, descripcion})
+            })
+            const res = await data.json()
+            if(res.estado){
+                window.location.href = '/pokemon'
+            }else{
+                console.log(res)
+            }
+        })
+</script>

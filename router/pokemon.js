@@ -45,7 +45,7 @@ router.get('/:id', async (req,res) => {
         const pokemonDB = await Pokemon.findOne({_id: id});
         console.log(pokemonDB);
         res.render('detalle', {
-            Pokemon:pokemonDB,
+            pokemon:pokemonDB,
             error: false
         })
     } catch (error) {
@@ -54,6 +54,51 @@ router.get('/:id', async (req,res) => {
             error: true,
             mensaje: 'Pokémon no encontrado!'
         })
+    }
+    
+})
+
+router.delete('/:id', async (req,res) => {
+    const id = req.params.id
+    try {
+        const pokemonDB = await Pokemon.findByIdAndDelete({_id: id});
+        console.log(pokemonDB);
+       if(!pokemonDB){
+        res.json({
+            estado: false,
+            mensaje: 'No se puede eliminar el Pokémon'
+        })
+    }else {
+        res.json({
+            estado: true,
+            mensaje: 'Pokémon eliminado'
+        })
+    }
+        
+    } catch (error) {
+        console.error(error)
+    }
+    
+})
+
+router.put('/:id', async (req,res) => {
+    const id = req.params.id;
+    const body = req.body;
+    try {
+        const pokemonDB = await Pokemon.findByIdAndUpdate(
+            id, body, {userFindAndModify: false}
+            )
+        console.log(pokemonDB)
+        res.json({
+            estado: true,
+            mensaje: 'Pokémon editado'
+        })  
+    } catch (error) {
+        console.error(error)
+        res.json({
+            estado: false,
+            mensaje: 'Problema al editar el Pokémon'
+        }) 
     }
     
 })
